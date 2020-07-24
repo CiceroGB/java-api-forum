@@ -70,11 +70,11 @@ public class Answer {
 		this.topic = topic;
 	}
 
-	public LocalDateTime getDataCriacao() {
+	public LocalDateTime getCreateDate() {
 		return createDate;
 	}
 
-	public void setDataCriacao(LocalDateTime createDate) {
+	public void setCreateDate(LocalDateTime createDate) {
 		this.createDate = createDate;
 	}
 
