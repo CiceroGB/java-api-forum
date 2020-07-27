@@ -2,6 +2,7 @@ package com.cicerogb.forum.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -62,23 +63,35 @@ public class TopicController {
 	}
 
 	@GetMapping("/{id}")
-	public DetailsTopicDto detail(@PathVariable Long id) {
-		Topic topic = topicRepository.getOne(id);
-		return new DetailsTopicDto(topic);
+	public ResponseEntity<DetailsTopicDto> detail(@PathVariable Long id) {
+		Optional<Topic> topic = topicRepository.findById(id);
+		if (topic.isPresent()) {
+			return ResponseEntity.ok(new DetailsTopicDto(topic.get()));
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<TopicDto> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicForm form) {
-		Topic topic = form.update(id, topicRepository);
-		return ResponseEntity.ok(new TopicDto(topic));
+		Optional<Topic> optional = topicRepository.findById(id);
+		if (optional.isPresent()) {
+			Topic topic = form.update(id, topicRepository);
+			return ResponseEntity.ok(new TopicDto(topic));
+		}
+		return ResponseEntity.notFound().build();
+
 	}
 
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		topicRepository.deleteById(id);
-		return ResponseEntity.ok().build();
+		Optional<Topic> optional = topicRepository.findById(id);
+		if (optional.isPresent()) {
+			topicRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 }
