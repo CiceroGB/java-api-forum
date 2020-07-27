@@ -3,6 +3,7 @@ package com.cicerogb.forum.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.cicerogb.forum.controller.dto.DetailsTopicDto;
 import com.cicerogb.forum.controller.dto.TopicDto;
 import com.cicerogb.forum.controller.form.TopicForm;
+import com.cicerogb.forum.controller.form.UpdateTopicForm;
 import com.cicerogb.forum.model.Topic;
 import com.cicerogb.forum.repository.CourseRepository;
 import com.cicerogb.forum.repository.TopicRepository;
@@ -61,6 +64,15 @@ public class TopicController {
 	public DetailsTopicDto detail(@PathVariable Long id) {
 		Topic topic = topicRepository.getOne(id);
 		return new DetailsTopicDto(topic);
-
+	}
+	
+	
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity<TopicDto> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicForm form) {
+		Topic topic  =  form.update(id, topicRepository);
+		return ResponseEntity.ok(new TopicDto(topic));
+		
+		
 	}
 }
